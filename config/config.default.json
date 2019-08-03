@@ -1,0 +1,11 @@
+{
+	"services": {
+		"database": {
+			"host": "changeme",
+			"port": 0,
+			"user": "changeme",
+			"password": "changeme",
+			"database": "changeme"
+		}
+	}
+}
