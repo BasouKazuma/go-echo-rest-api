@@ -11,7 +11,7 @@ import (
 func main() {
 	e := echo.New()
 	database := db.InitDB()
-	defer database.Close()
+	// defer database.Close()
 
 	// Initialize handler
 	h := &handler.Handler{DB: database}
@@ -19,6 +19,7 @@ func main() {
 	// Routes
 	e.GET("/", getHome)
 	e.POST("/user/create", h.CreateUser)
+	e.GET("/user/:userId", h.GetUser)
 
 	e.Logger.Fatal(e.Start(":1323"))
 }
