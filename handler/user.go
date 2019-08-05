@@ -11,29 +11,24 @@ type CreateUserBody struct {
 	Email	string	`json:"email" db:"email"`
 }
 
-type GetUserBody struct {
-	Id	int64	`json:"id" db:"id"`
-}
-
 func (h *Handler) CreateUser(c echo.Context) (err error) {
 	// Bind
 	userBody := new(CreateUserBody)
 	if err = c.Bind(userBody); err != nil {
 		return
 	}
-	email := userBody.Email
-	database := h.DB
 
 	// Check Connection
+	database := h.DB
 	err = database.Ping()
 	if err != nil {
-	 panic(err)
+		panic(err)
 	}
 
 	// Check email
 	var count int
 	checkUserQuery := `SELECT COUNT(*) FROM users WHERE email = $1`
-	err = database.QueryRow(checkUserQuery, email).Scan(&count)
+	err = database.QueryRow(checkUserQuery, userBody.Email).Scan(&count)
 	if count > 0 {
 		message := model.ErrorMessage{Message: "Email already exists."}
 		return c.JSON(http.StatusConflict, message)
@@ -53,8 +48,14 @@ func (h *Handler) CreateUser(c echo.Context) (err error) {
 }
 
 func (h *Handler) GetUser(c echo.Context) (err error) {
-	userId := c.Param("userId")
+	userId := c.Param("user_id")
+
+	// Check Connection
 	database := h.DB
+	err = database.Ping()
+	if err != nil {
+		panic(err)
+	}
 
 	// Get new User
 	user := model.User{}
@@ -64,5 +65,5 @@ func (h *Handler) GetUser(c echo.Context) (err error) {
 		message := model.ErrorMessage{Message: "Account not found."}
 		return c.JSON(http.StatusNotFound, message)
 	}
-	return c.JSON(http.StatusCreated, user)
+	return c.JSON(http.StatusOK, user)
 }

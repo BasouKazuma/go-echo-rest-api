@@ -19,7 +19,9 @@ func main() {
 	// Routes
 	e.GET("/", getHome)
 	e.POST("/user/create", h.CreateUser)
-	e.GET("/user/:userId", h.GetUser)
+	e.GET("/user/:user_id", h.GetUser)
+	e.POST("/user/:user_id/file/create", h.CreateFile)
+	e.GET("/user/:user_id/file/list", h.GetFileList)
 
 	e.Logger.Fatal(e.Start(":1323"))
 }

@@ -10,18 +10,18 @@ import (
 )
 
 type DatabaseConfig struct {
-	Host        string    `json:"host"`
-	Port        int       `json:"port"`
-	User        string    `json:"user"`
-	Password    string    `json:"password"`
-	Database    string    `json:"database"`
+	Host		string		`json:"host"`
+	Port		int			`json:"port"`
+	User		string		`json:"user"`
+	Password	string		`json:"password"`
+	Database	string		`json:"database"`
 }
 
 func InitDB() (*sql.DB) {
 	// Load Config
 	databaseConfig := DatabaseConfig{}
 	viper.SetConfigName("database") // name of config file (without extension)
-	viper.AddConfigPath("config/")   // path to look for the config file in
+	viper.AddConfigPath("config/") // path to look for the config file in
 	err := viper.ReadInConfig() // Find and read the config file
 	if err != nil { // Handle errors reading the config file
 		panic(fmt.Errorf("Fatal error config file: %s \n", err))
