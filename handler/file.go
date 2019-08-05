@@ -9,15 +9,23 @@ import (
 	"github.com/labstack/echo"
 )
 
-type CreateFileBody struct {
+type CreateFileRequest struct {
 	UserId	int64	`json:"userId" db:"userId"`
 	Name	string	`json:"name" db:"name"`
 	Bytes	string	`json:"bytes" db:"bytes"`
 }
 
+type GetFileResponse struct {
+	Id		int64	`json:"id" db:"id"`
+	UserId	int64	`json:"userId" db:"userId"`
+	Name	string	`json:"name" db:"name"`
+	Hash	string	`json:"hash" db:"hash"`
+	Bytes	string	`json:"bytes" db:"bytes"`
+}
+
 func (h *Handler) CreateFile(c echo.Context) (err error) {
 	// Bind
-	fileBody := new(CreateFileBody)
+	fileBody := new(CreateFileRequest)
 	if err = c.Bind(fileBody); err != nil {
 		message := model.ErrorMessage{Message: "Invalid body."}
 		return c.JSON(http.StatusBadRequest, message)
@@ -97,6 +105,34 @@ func (h *Handler) GetFileList(c echo.Context) (err error) {
 	return c.JSON(http.StatusOK, fileList)
 }
 
-// func (h *Handler) GetFile(c echo.Context) (err error) {
-// 	//
-// }
+func (h *Handler) GetFile(c echo.Context) (err error) {
+	// Params
+	userId := c.Param("user_id")
+	fileHash := c.Param("file_hash")
+
+	// Check Connection
+	database := h.DB
+	err = database.Ping()
+	if err != nil {
+		message := model.ErrorMessage{Message: "An error occurred."}
+		return c.JSON(http.StatusBadRequest, message)
+	}
+
+	// Get file
+	file := model.File{}
+	findFileQuery := `SELECT * FROM files WHERE hash = $1 AND user_id = $2`
+	err = database.QueryRow(findFileQuery, fileHash, userId).Scan(&file.Id, &file.UserId, &file.Name, &file.Hash)
+	if err != nil {
+		message := model.ErrorMessage{Message: "File not found."}
+		return c.JSON(http.StatusNotFound, message)
+	}
+
+	// Send Response
+	fileResponse := GetFileResponse{
+		Id: file.Id,
+		UserId: file.UserId,
+		Name: file.Name,
+		Hash: file.Hash,
+		Bytes: ""}
+	return c.JSON(http.StatusOK, fileResponse)
+}

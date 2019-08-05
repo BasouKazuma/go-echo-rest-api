@@ -7,13 +7,13 @@ import (
 	"github.com/labstack/echo"
 )
 
-type CreateUserBody struct {
+type CreateUserRequest struct {
 	Email	string	`json:"email" db:"email"`
 }
 
 func (h *Handler) CreateUser(c echo.Context) (err error) {
 	// Bind
-	userBody := new(CreateUserBody)
+	userBody := new(CreateUserRequest)
 	if err = c.Bind(userBody); err != nil {
 		return
 	}

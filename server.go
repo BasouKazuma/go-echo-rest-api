@@ -22,6 +22,7 @@ func main() {
 	e.GET("/user/:user_id", h.GetUser)
 	e.POST("/user/:user_id/file/create", h.CreateFile)
 	e.GET("/user/:user_id/file/list", h.GetFileList)
+	e.GET("/user/:user_id/file/:file_hash", h.GetFile)
 
 	e.Logger.Fatal(e.Start(":1323"))
 }
