@@ -132,6 +132,12 @@ func (h *Handler) GetFile(c echo.Context) (err error) {
 		message := model.ErrorMessage{Message: "File not found."}
 		return c.JSON(http.StatusNotFound, message)
 	}
+	fileBytes, err := model.GetBytesOfFileFromS3(file.Hash)
+	// var fileIntArray = fileBytes.Select(b => (int)b).ToArray()
+	if err != nil {
+		message := model.ErrorMessage{Message: "File not downloaded."}
+		return c.JSON(http.StatusNotFound, message)
+	}
 
 	// Send Response
 	fileResponse := GetFileResponse{
@@ -139,6 +145,6 @@ func (h *Handler) GetFile(c echo.Context) (err error) {
 		UserId: file.UserId,
 		Name: file.Name,
 		Hash: file.Hash,
-		Bytes: nil}
+		Bytes: fileBytes}
 	return c.JSON(http.StatusOK, fileResponse)
 }
