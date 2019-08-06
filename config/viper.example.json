@@ -8,10 +8,10 @@
 			"database": "changeme"
 		},
 		"aws": {
-			"AWS_ACCESS_KEY_ID": "changeme",
-			"AWS_SECRET_ACCESS_KEY": "changeme",
-			"AWS_S3_BUCKET": "changeme",
-			"AWS_S3_REGION": "changeme"
+			"aws_access_key_id": "changeme",
+			"aws_secret_access_key": "changeme",
+			"aws_region": "changeme",
+			"s3_bucket": "changeme"
 		}
 	}
 }

@@ -9,10 +9,10 @@ import (
 	"os"
 
 	"github.com/aws/aws-sdk-go/aws"
-	// "github.com/aws/aws-sdk-go/aws/credentials"
+	"github.com/aws/aws-sdk-go/aws/credentials"
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/s3"
-	// "github.com/spf13/viper"
+	"github.com/spf13/viper"
 )
 
 type File struct {
@@ -22,29 +22,27 @@ type File struct {
 	Hash		string		`json:"hash" db:"hash"`
 }
 
-// type S3Config struct {
-// 	AccessKeyId			string		`json:"AWS_ACCESS_KEY_ID"`
-// 	SecretAccessKey		string		`json:"AWS_SECRET_ACCESS_KEY"`
-// 	Bucket				string		`json:"AWS_S3_BUCKET"`
-// 	Region				string		`json:"AWS_S3_REGION"`
-// }
+type AwsConfig struct {
+	AwsAccessKeyId			string		`mapstructure:"aws_access_key_id"`
+	AwsSecretAccessKey		string		`mapstructure:"aws_secret_access_key"`
+	AwsRegion				string		`mapstructure:"aws_region"`
+	S3Bucket				string		`mapstructure:"s3_bucket"`
+}
 
 func UploadFileToS3(fileHash string, fileBytes []byte) (error) {
-	// // Load Config
-	// s3Config := S3Config{}
-	// viper.SetConfigName("aws_s3") // name of config file (without extension)
-	// viper.AddConfigPath("../config/") // path to look for the config file in
-	// err := viper.MergeInConfig() // Find and read the config file
-	// if err != nil { // Handle errors reading the config file
-	// 	panic(fmt.Errorf("Fatal error config file: %s \n", err))
-	// }
-	// err = viper.Unmarshal(&s3Config)
-	// if err != nil {
-	// 	fmt.Printf("unable to decode into config struct, %v", err)
-	// }
+	// Load Config
+	viperAwsConfig := viper.Sub("services.aws")
+	awsConfig := AwsConfig{}
+	err := viperAwsConfig.Unmarshal(&awsConfig)
+	if err != nil {
+		fmt.Printf("unable to decode into config struct, %v", err)
+	}
+	fmt.Printf("%v", awsConfig)
 
 	// Get AWS Session
-	sess, err := session.NewSession(&aws.Config{})
+	sess, err := session.NewSession(&aws.Config{
+		Region: aws.String(awsConfig.AwsRegion),
+		Credentials: credentials.NewStaticCredentials(awsConfig.AwsAccessKeyId, awsConfig.AwsSecretAccessKey, "")})
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -69,7 +67,7 @@ func UploadFileToS3(fileHash string, fileBytes []byte) (error) {
 	// Config settings: this is where you choose the bucket, filename, content-type etc.
 	// of the file you're uploading.
 	_, err = s3.New(sess).PutObject(&s3.PutObjectInput{
-		Bucket:					aws.String("basoukazuma-file-upload"),
+		Bucket:					aws.String(awsConfig.S3Bucket),
 		Key:					aws.String(fmt.Sprintf("files/%v", fileHash)),
 		ACL:					aws.String("private"),
 		Body:					bytes.NewReader(buffer),

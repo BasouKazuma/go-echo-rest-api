@@ -10,11 +10,11 @@ import (
 )
 
 type DatabaseConfig struct {
-	Host		string		`json:"host"`
-	Port		int			`json:"port"`
-	User		string		`json:"user"`
-	Password	string		`json:"password"`
-	Database	string		`json:"database"`
+	Host		string		`mapstructure:"host"`
+	Port		int			`mapstructure:"port"`
+	User		string		`mapstructure:"user"`
+	Password	string		`mapstructure:"password"`
+	Database	string		`mapstructure:"database"`
 }
 
 func InitDB() (*sql.DB) {
