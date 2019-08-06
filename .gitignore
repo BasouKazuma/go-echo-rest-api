@@ -2,3 +2,4 @@
 config/*
 !config/database_example.json
 !config/hash_example.json
+!config/aws_s3_example.json

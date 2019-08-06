@@ -12,7 +12,7 @@ import (
 type CreateFileRequest struct {
 	UserId	int64	`json:"userId" db:"userId"`
 	Name	string	`json:"name" db:"name"`
-	Bytes	string	`json:"bytes" db:"bytes"`
+	Bytes	[]byte	`json:"bytes" db:"bytes"`
 }
 
 type GetFileResponse struct {
@@ -20,7 +20,7 @@ type GetFileResponse struct {
 	UserId	int64	`json:"userId" db:"userId"`
 	Name	string	`json:"name" db:"name"`
 	Hash	string	`json:"hash" db:"hash"`
-	Bytes	string	`json:"bytes" db:"bytes"`
+	Bytes	[]byte	`json:"bytes" db:"bytes"`
 }
 
 func (h *Handler) CreateFile(c echo.Context) (err error) {
@@ -48,6 +48,12 @@ func (h *Handler) CreateFile(c echo.Context) (err error) {
 	// Create Hash
 	fileHashData := crypto.FileHashData{UserId: fileBody.UserId, Name: fileBody.Name}
 	hash := crypto.CreateFileHash(fileHashData)
+
+	err = model.UploadFileToS3(hash, fileBody.Bytes)
+	if err != nil {
+		message := model.ErrorMessage{Message: "Upload failed."}
+		return c.JSON(http.StatusBadRequest, message)
+	}
 	
 	// Add File
 	file := model.File{
@@ -133,6 +139,6 @@ func (h *Handler) GetFile(c echo.Context) (err error) {
 		UserId: file.UserId,
 		Name: file.Name,
 		Hash: file.Hash,
-		Bytes: ""}
+		Bytes: nil}
 	return c.JSON(http.StatusOK, fileResponse)
 }
