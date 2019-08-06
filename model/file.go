@@ -96,8 +96,8 @@ func GetBytesOfFileFromS3(fileHash string) ([]byte, error) {
 
 	// AWS Download Session
 	sess, _ := session.NewSession(&aws.Config{
-			Region: aws.String(awsConfig.AwsRegion)},
-	)
+			Region: aws.String(awsConfig.AwsRegion),
+			Credentials: credentials.NewStaticCredentials(awsConfig.AwsAccessKeyId, awsConfig.AwsSecretAccessKey, "")})
 	downloader := s3manager.NewDownloader(sess)
 
 	// Download the file
