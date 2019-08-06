@@ -12,8 +12,9 @@ type HashConfig struct {
 }
 
 type FileHashData struct {
-	UserId	int64	`json:"userId" db:"userId"`
-	Name	string	`json:"name" db:"name"`
+	UserId	int64		`json:"userId"`
+	Name	string		`json:"name"`
+	Bytes	[]byte		`json:"bytes"`
 }
 
 func CreateFileHash(data FileHashData) (string) {

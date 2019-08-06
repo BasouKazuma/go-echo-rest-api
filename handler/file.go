@@ -46,9 +46,22 @@ func (h *Handler) CreateFile(c echo.Context) (err error) {
 	}
 
 	// Create Hash
-	fileHashData := crypto.FileHashData{UserId: fileBody.UserId, Name: fileBody.Name}
+	fileHashData := crypto.FileHashData{
+		UserId: fileBody.UserId,
+		Name: fileBody.Name,
+		Bytes: fileBody.Bytes}
 	hash := crypto.CreateFileHash(fileHashData)
 
+	// Check Hash
+	var count int
+	checkFileQuery := `SELECT COUNT(*) FROM files WHERE hash = $1`
+	err = database.QueryRow(checkFileQuery, hash).Scan(&count)
+	if count > 0 {
+		message := model.ErrorMessage{Message: "File was already uploaded."}
+		return c.JSON(http.StatusConflict, message)
+	}
+
+	// Upload File
 	err = model.UploadFileToS3(hash, fileBody.Bytes)
 	if err != nil {
 		message := model.ErrorMessage{Message: "Upload failed."}
@@ -133,7 +146,6 @@ func (h *Handler) GetFile(c echo.Context) (err error) {
 		return c.JSON(http.StatusNotFound, message)
 	}
 	fileBytes, err := model.GetBytesOfFileFromS3(file.Hash)
-	// var fileIntArray = fileBytes.Select(b => (int)b).ToArray()
 	if err != nil {
 		message := model.ErrorMessage{Message: "File not downloaded."}
 		return c.JSON(http.StatusNotFound, message)

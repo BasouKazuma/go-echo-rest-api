@@ -39,7 +39,6 @@ func UploadFileToS3(fileHash string, fileBytes []byte) (error) {
 		fmt.Printf("unable to decode into config struct, %v", err)
 		return err
 	}
-	fmt.Printf("%v", awsConfig)
 
 	// Get AWS Session
 	sess, err := session.NewSession(&aws.Config{
