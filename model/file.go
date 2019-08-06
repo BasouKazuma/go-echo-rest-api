@@ -12,7 +12,7 @@ import (
 	// "github.com/aws/aws-sdk-go/aws/credentials"
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/s3"
-	"github.com/spf13/viper"
+	// "github.com/spf13/viper"
 )
 
 type File struct {
@@ -22,27 +22,28 @@ type File struct {
 	Hash		string		`json:"hash" db:"hash"`
 }
 
-type S3Config struct {
-	AccessKeyId			string		`json:"AWS_ACCESS_KEY_ID"`
-	SecretAccessKey		string		`json:"AWS_SECRET_ACCESS_KEY"`
-	Bucket				string		`json:"AWS_S3_BUCKET"`
-	Region				string		`json:"AWS_S3_REGION"`
-}
+// type S3Config struct {
+// 	AccessKeyId			string		`json:"AWS_ACCESS_KEY_ID"`
+// 	SecretAccessKey		string		`json:"AWS_SECRET_ACCESS_KEY"`
+// 	Bucket				string		`json:"AWS_S3_BUCKET"`
+// 	Region				string		`json:"AWS_S3_REGION"`
+// }
 
 func UploadFileToS3(fileHash string, fileBytes []byte) (error) {
-	// Load Config
-	s3Config := S3Config{}
-	viper.SetConfigName("aws_s3") // name of config file (without extension)
-	viper.AddConfigPath("../config/") // path to look for the config file in
-	err := viper.MergeInConfig() // Find and read the config file
-	if err != nil { // Handle errors reading the config file
-		panic(fmt.Errorf("Fatal error config file: %s \n", err))
-	}
-	err = viper.Unmarshal(&s3Config)
-	if err != nil {
-		fmt.Printf("unable to decode into config struct, %v", err)
-	}
+	// // Load Config
+	// s3Config := S3Config{}
+	// viper.SetConfigName("aws_s3") // name of config file (without extension)
+	// viper.AddConfigPath("../config/") // path to look for the config file in
+	// err := viper.MergeInConfig() // Find and read the config file
+	// if err != nil { // Handle errors reading the config file
+	// 	panic(fmt.Errorf("Fatal error config file: %s \n", err))
+	// }
+	// err = viper.Unmarshal(&s3Config)
+	// if err != nil {
+	// 	fmt.Printf("unable to decode into config struct, %v", err)
+	// }
 
+	// Get AWS Session
 	sess, err := session.NewSession(&aws.Config{})
 	if err != nil {
 		log.Fatal(err)
