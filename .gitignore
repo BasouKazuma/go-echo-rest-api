@@ -1,3 +1,8 @@
 # Config files
 config/*
 !config/viper.example.json
+
+# Dependencies
+vendor/*
+
+# Misc
