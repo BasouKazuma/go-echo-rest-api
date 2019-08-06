@@ -15,3 +15,8 @@ This project is for exploring Go and Echo.
 ## Run Server
 
 `go run server.go`
+
+
+# API Documentation
+
+https://documenter.getpostman.com/view/8371151/SVYrseFN
