@@ -1,6 +1,0 @@
-{
-	"AWS_ACCESS_KEY_ID": "changeme",
-	"AWS_SECRET_ACCESS_KEY": "changeme",
-	"AWS_S3_BUCKET": "changeme",
-	"AWS_S3_REGION": "changeme"
-}

@@ -20,13 +20,8 @@ type DatabaseConfig struct {
 func InitDB() (*sql.DB) {
 	// Load Config
 	databaseConfig := DatabaseConfig{}
-	viper.SetConfigName("database") // name of config file (without extension)
-	viper.AddConfigPath("config/") // path to look for the config file in
-	err := viper.ReadInConfig() // Find and read the config file
-	if err != nil { // Handle errors reading the config file
-		panic(fmt.Errorf("Fatal error config file: %s \n", err))
-	}
-	err = viper.Unmarshal(&databaseConfig)
+	viperDBConfig := viper.Sub("services.database")
+	err := viperDBConfig.Unmarshal(&databaseConfig)
 	if err != nil {
 		fmt.Printf("unable to decode into config struct, %v", err)
 	}

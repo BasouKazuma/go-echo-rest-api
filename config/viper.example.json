@@ -1,0 +1,17 @@
+{
+	"services": {
+		"database": {
+			"host": "changeme",
+			"port": 0,
+			"user": "changeme",
+			"password": "changeme",
+			"database": "changeme"
+		},
+		"aws": {
+			"AWS_ACCESS_KEY_ID": "changeme",
+			"AWS_SECRET_ACCESS_KEY": "changeme",
+			"AWS_S3_BUCKET": "changeme",
+			"AWS_S3_REGION": "changeme"
+		}
+	}
+}

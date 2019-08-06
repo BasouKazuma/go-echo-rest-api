@@ -1,15 +1,29 @@
 package main
 
 import (
-	"go-echo-rest-api/db"
-	"go-echo-rest-api/handler"
+	"fmt"
 	"net/http"
 	
+	"go-echo-rest-api/db"
+	"go-echo-rest-api/handler"
+	
 	"github.com/labstack/echo"
+	"github.com/spf13/viper"
 )
 
 func main() {
+	// Load Config
+	viper.SetConfigName("viper.production") // name of config file (without extension)
+	viper.AddConfigPath("config/") // path to look for the config file in
+	err := viper.ReadInConfig() // Find and read the config file
+	if err != nil { // Handle errors reading the config file
+		panic(fmt.Errorf("Fatal error config file: %s \n", err))
+	}
+
+	// Initialize Echo
 	e := echo.New()
+
+	//Initialize Database
 	database := db.InitDB()
 	// defer database.Close()
 
