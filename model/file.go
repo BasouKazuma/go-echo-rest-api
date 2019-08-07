@@ -104,7 +104,7 @@ func GetBytesOfFileFromS3(fileHash string) ([]byte, error) {
 	fileLocation := fmt.Sprintf("/tmp/%v", fileHash)
 	file, err := os.Create(fileLocation)
 	if err != nil {
-		log.Fatalf("Unable to create file %q, %v", fileLocation, err)
+		fmt.Printf("Unable to create file %q, %v", fileLocation, err)
 		return nil, err
 	}
 	_, err = downloader.Download(file,
@@ -112,14 +112,14 @@ func GetBytesOfFileFromS3(fileHash string) ([]byte, error) {
 			Bucket:		aws.String(awsConfig.S3Bucket),
 			Key:		aws.String(item)})
 	if err != nil {
-		log.Fatalf("Unable to download item %q, %v", item, err)
+		fmt.Printf("Unable to download item %q, %v", item, err)
 		return nil, err
 	}
 
 	// Read File
 	fileBytes, err := ioutil.ReadFile(fileLocation)
 	if err != nil {
-		log.Fatal(err)
+		fmt.Print(err)
 		return nil, err
 	}
 
