@@ -10,14 +10,14 @@ import (
 )
 
 type CreateFileRequest struct {
-	UserId	int64	`json:"userId" db:"userId"`
+	UserId	int64	`json:"user_id" db:"user_id"`
 	Name	string	`json:"name" db:"name"`
 	Bytes	[]byte	`json:"bytes" db:"bytes"`
 }
 
 type GetFileResponse struct {
 	Id		int64	`json:"id" db:"id"`
-	UserId	int64	`json:"userId" db:"userId"`
+	UserId	int64	`json:"user_id" db:"user_id"`
 	Name	string	`json:"name" db:"name"`
 	Hash	string	`json:"hash" db:"hash"`
 	Bytes	[]byte	`json:"bytes" db:"bytes"`
